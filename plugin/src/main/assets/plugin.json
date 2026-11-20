@@ -1,0 +1,9 @@
+{
+  "id": "com.stupidtree.hitax.eas",
+  "name": "教务备忘录核心",
+  "version": "0.1.0",
+  "apiVersion": 11,
+  "entryClass": "com.stupidtree.hitax.plugin.EasCorePlugin",
+  "capabilities": ["hita.eas.exams"],
+  "description": "T1 教务考试备忘录核心"
+}
