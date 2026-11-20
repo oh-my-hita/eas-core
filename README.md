@@ -1,4 +1,6 @@
-# HITA EAS core (T1, preview)
+# HITA EAS core (T1, headless)
 
-当前只提供考试备忘录 `ExamService`；登录、成绩、空教室、培养方案仍在旧 `plugin-eas`。
-这是 preview，不计入官方整合包 1.0。
+依赖 `plugin-eas-headless:12`（仅 data/service 类，无 UI/Activity/布局），提供：
+登录、成绩、考试、空教室、培养计划。
+
+T2 页面在 `oh-my-hita/ui-eas`。

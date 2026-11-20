@@ -9,8 +9,12 @@ android {
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
     kotlinOptions { jvmTarget = '1.8' }
 }
+configurations { bundled }
 dependencies {
+    bundled 'io.github.kajimi16.ohmyhita:plugin-eas-headless:12'
     compileOnly 'io.github.kajimi16.ohmyhita:plugin-sdk:11'
+    compileOnly 'io.github.kajimi16.ohmyhita:plugin-eas-headless:12'
+    implementation 'io.github.kajimi16.ohmyhita:plugin-eas-headless:12'
     compileOnly 'androidx.lifecycle:lifecycle-livedata-core:2.8.4'
     compileOnly 'com.google.code.gson:gson:2.8.9'
 }
@@ -36,11 +40,19 @@ tasks.register('buildPluginDex') {
         new java.util.zip.ZipFile(aar).withCloseable { zip ->
             jar.bytes = zip.getInputStream(zip.getEntry('classes.jar')).bytes
         }
+        def extra = configurations.bundled.files.findAll { it.name.endsWith('.aar') }.collect { aarFile ->
+            def j = new File(outDir, "dep-${aarFile.name}.jar")
+            new java.util.zip.ZipFile(aarFile).withCloseable { zip ->
+                j.bytes = zip.getInputStream(zip.getEntry('classes.jar')).bytes
+            }
+            j
+        }
         exec {
             commandLine "$sdk/build-tools/35.0.0/d8",
                 '--lib', "$sdk/platforms/android-35/android.jar",
-                '--min-api', '23', '--output', outDir.absolutePath, jar.absolutePath
+                '--min-api', '23', '--output', outDir.absolutePath, jar.absolutePath, *extra.collect { it.absolutePath }
         }
+        extra*.delete()
         jar.delete()
         def dex = new File(outDir, 'classes.dex')
         println "plugin dex: ${dex.absolutePath} (${dex.length()} bytes)"
